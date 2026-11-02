@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Matemáticas: Gerade / Ungerade</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:linear-gradient(160deg,#fff6d6,#d9f2ff);color:#1f2a44;min-height:100vh}
+header{text-align:center;padding:14px 10px 4px}h1{margin:0;font-size:clamp(1.6rem,5vw,2.6rem);color:#e2572b}header p{margin:.4em 0}
+main{max-width:820px;margin:0 auto;padding:10px}.card{background:#fff;border-radius:20px;padding:16px;margin:12px 0;box-shadow:0 4px 14px #0002}
+h2{margin:.2em 0 .5em;font-size:1.3rem}
+.btn,.tab{font-size:1.2rem;font-weight:700;border:none;border-radius:14px;padding:12px;cursor:pointer;min-height:52px;color:#fff}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.btn{flex:1 1 150px}.btn:disabled{opacity:.5}
+.green{background:#22a35a}.orange{background:#f08a24}.purple{background:#7b4fd6}.gray{background:#6b7280}.blue{background:#2b8de2}
+button:focus-visible,input:focus-visible{outline:4px solid #ffbf00;outline-offset:2px}
+.topics label{display:flex;align-items:center;gap:10px;font-size:1.25rem;padding:10px;background:#eef1f6;border-radius:14px;margin:6px 0;cursor:pointer}
+.topics input{width:26px;height:26px}.ck{color:#22a35a;font-weight:800}
+.hidden{display:none}
+.stats{display:flex;justify-content:space-around;font-size:1.15rem;font-weight:700;flex-wrap:wrap;gap:6px}
+.fb{min-height:2.2em;text-align:center;font-size:1.2rem;font-weight:700;margin-top:8px}.good{color:#1a8a4a}.bad{color:#c7362b}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}.tab{background:#eef1f6;color:#1f2a44;flex:1 1 90px}.tab[aria-pressed=true]{background:#7b4fd6;color:#fff}
+.flash{background:#f6f2ff;border-radius:16px;padding:14px;margin-top:10px;font-size:1.15rem;line-height:1.5}.flash b.big{font-size:1.8rem;color:#7b4fd6}
+.q{font-size:clamp(2.2rem,9vw,3.4rem);font-weight:800;text-align:center;margin:10px 0;color:#2b8de2;letter-spacing:.04em}
+.wIn{font-size:1.5rem;width:100%;text-align:center;border:3px solid #2b8de2;border-radius:14px;padding:10px}
+#timer{color:#c7362b}
+.demoIn{font-size:1.4rem;width:170px;text-align:center;border:2px solid #2b8de2;border-radius:10px;padding:8px}
+.tiles{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0}
+.tile{font-size:1.3rem;font-weight:700;border:none;border-radius:12px;padding:12px 14px;min-height:54px;min-width:60px;cursor:pointer;color:#1f2a44;box-shadow:0 2px 0 #0003}
+.tile.used{opacity:.25;pointer-events:none}
+.t0{background:#ffe08a}.t1{background:#bfe3ff}.t2{background:#d9c9ff}.t3{background:#c9f2d6}.t4{background:#ffd3cc}.t5{background:#ffd7a8}
+.built{min-height:72px;background:#eef1f6;border:3px dashed #9bb;border-radius:14px;padding:6px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.built .tile{background:#fff;border:2px solid #2b8de2}
+.preview{text-align:center;font-size:1.3rem;font-weight:700;color:#7b4fd6;min-height:1.6em;word-break:break-all}
+.seg{display:flex;gap:6px;margin:6px 0}.seg .tab{flex:1}
+.word{font-size:1.6rem;font-weight:800;color:#1a8a4a;text-align:center;word-break:break-all}
+.big2{font-size:1.4rem;min-height:72px}.gd{background:#2b8de2}.ug{background:#e2572b}.qw{font-size:clamp(1.4rem,6vw,2.3rem);word-break:break-all;color:#7b4fd6}
+</style></head><body>
+<header><h1>⚖️ Gerade / Ungerade</h1>
+<p><b>Números pares e impares en alemán</b></p>
+<p>¡Hola, <span class="nm">amiguito</span>! <a href="#" onclick="cambiarNombre();return false" style="font-size:.9rem;color:#2b8de2;white-space:nowrap">✏️ Cambiar nombre</a></p></header>
+<main>
+<section id="home" class="card">
+<h2>1. Elige los números</h2>
+<div class="topics" id="topics"></div>
+<h2 style="margin-top:14px">2. ¿Cómo quieres ver los números?</h2>
+<div class="seg" id="segHome"></div>
+<h2 style="margin-top:14px">3. ¿Qué quieres hacer?</h2>
+<div class="row"><button type="button" class="btn purple" onclick="show('study')">📖 Estudiar</button><button type="button" class="btn green" onclick="startPractice()">✏️ Practicar</button><button type="button" class="btn orange" onclick="startChallenge()">⏱️ Desafío 60 s</button></div>
+<p id="best" style="font-size:1.1rem;text-align:center"></p>
+<p id="homeChecks" style="text-align:center;font-size:1.05rem"></p>
+</section>
+<section id="study" class="card hidden">
+<h2>📖 Estudiar</h2>
+<div class="tabs" id="tabs"></div>
+<div class="flash" id="flash"></div>
+<h2 style="margin-top:16px">🔎 Prueba un número</h2>
+<div class="row" id="exBtns"></div>
+<p>O escribe tu número: <input class="demoIn" id="demoIn" type="number" inputmode="numeric" min="0" max="1000000"> <button type="button" class="btn blue" style="flex:0 0 auto" onclick="demo(+demoIn.value)">Ver</button></p>
+<div class="flash" id="demoOut"></div>
+<div class="row"><button type="button" class="btn gray" onclick="show('home')">🏠 Inicio</button></div>
+</section>
+<section id="practice" class="card hidden">
+<h2>✏️ Practicar</h2>
+<div class="seg" id="segPrac"></div>
+<div class="stats"><span>✅ Correctas: <span id="pScore">0</span></span><span style="opacity:.4">|</span><span>🔥 Racha: <span id="pStreak">0</span></span></div>
+<div id="pArea"></div>
+<div class="row"><button type="button" class="btn gd big2" id="pG" onclick="answerP(true)">gerade (par)</button><button type="button" class="btn ug big2" id="pU" onclick="answerP(false)">ungerade (impar)</button></div>
+<div class="fb" id="pFb"></div>
+<div class="row"><button type="button" class="btn blue" id="pNext" onclick="goNextPractice()">➡️ Siguiente</button><button type="button" class="btn gray" onclick="show('home')">🏠 Inicio</button></div>
+</section>
+<section id="challenge" class="card hidden">
+<h2>⏱️ Desafío 60 s</h2>
+<div class="stats"><span id="timer">⏱️ 60</span><span>⭐ Puntos: <span id="dScore">0</span></span><span>🔥 Racha: <span id="dStreak">0</span></span><span>❌ Errores: <span id="dErr">0</span></span></div>
+<div id="dPlay"><div id="dArea"></div><div class="row"><button type="button" class="btn gd big2" onclick="answerD(true)">gerade (par)</button><button type="button" class="btn ug big2" onclick="answerD(false)">ungerade (impar)</button></div></div>
+<div class="fb" id="dFb"></div>
+<div class="row"><button type="button" class="btn orange hidden" id="dAgain" onclick="startChallenge()">🔁 Otra vez</button><button type="button" class="btn gray" onclick="stopChallenge();show('home')">🏠 Inicio</button></div>
+</section>
+</main>
+<script>window.ASK_NAME=true;</script>
+<div id="nmBox" style="display:none;position:fixed;inset:0;background:rgba(31,42,68,.55);z-index:99;align-items:center;justify-content:center;padding:16px">
+<form id="nmForm" style="background:#fff;border-radius:20px;padding:24px;max-width:420px;width:100%;text-align:center;font-family:inherit">
+<p style="font-size:1.4rem;font-weight:700;margin:0 0 12px">👋 ¡Hola! ¿Cómo te llamas?</p>
+<p style="font-size:1.05rem;margin:0 0 12px">Escribe tu nombre o tu apodo</p>
+<input id="nmIn" maxlength="20" autocomplete="off" style="width:100%;font-size:1.4rem;padding:12px;border:2px solid #2b8de2;border-radius:12px;text-align:center">
+<button type="submit" style="width:100%;font-size:1.3rem;padding:14px;margin-top:12px;border:0;border-radius:14px;background:#22a35a;color:#fff;font-weight:700;cursor:pointer">¡Listo! ✅</button>
+</form></div>
+<script>
+(function(){
+const K="sociales_nombre";
+function clean(s){return (s||"").replace(/[<>"]/g,"").trim().slice(0,20)}
+try{const q=clean(new URLSearchParams(location.search).get("nombre"));if(q)localStorage.setItem(K,q)}catch(e){}
+window.NM=function(){try{return clean(localStorage.getItem(K))||"amiguito"}catch(e){return "amiguito"}};
+function apply(){document.querySelectorAll(".nm").forEach(e=>e.textContent=NM());
+const n=(function(){try{return clean(localStorage.getItem(K))}catch(e){return ""}})();
+document.querySelectorAll("a[data-app]").forEach(a=>{a.href=a.dataset.app+(n?"?nombre="+encodeURIComponent(n):"")})}
+window.cambiarNombre=function(){const b=document.getElementById("nmBox"),i=document.getElementById("nmIn");i.value=NM()=="amiguito"?"":NM();b.style.display="flex";i.focus()};
+document.getElementById("nmForm").onsubmit=function(ev){ev.preventDefault();const v=clean(document.getElementById("nmIn").value);if(!v){document.getElementById("nmIn").focus();return}
+try{localStorage.setItem(K,v)}catch(e){}document.getElementById("nmBox").style.display="none";apply()};
+apply();
+if(window.ASK_NAME&&NM()=="amiguito")cambiarNombre();
+})();
+</script>
+<script>
+// ===== Números en alemán =====
+const ONES=["null","eins","zwei","drei","vier","fünf","sechs","sieben","acht","neun","zehn","elf","zwölf"];
+const TEENS={13:"dreizehn",14:"vierzehn",15:"fünfzehn",16:"sechzehn",17:"siebzehn",18:"achtzehn",19:"neunzehn"};
+const TENS=["","","zwanzig","dreißig","vierzig","fünfzig","sechzig","siebzig","achtzig","neunzig"];
+function unit(o){return o===1?"ein":ONES[o]}
+function p100(x,fin){if(x===0)return[];if(x===1)return[fin?"eins":"ein"];if(x<=12)return[ONES[x]];if(x<20)return[TEENS[x]];
+const o=x%10,t=Math.floor(x/10);return o?[unit(o),"und",TENS[t]]:[TENS[t]]}
+function p1000(x,fin){const h=Math.floor(x/100),r=x%100,a=[];if(h)a.push(unit(h),"hundert");return a.concat(p100(r,fin))}
+function germanParts(n){n=Math.floor(n);if(n===1000000)return["eine","Million"];if(n===0)return["null"];
+const t=Math.floor(n/1000),r=n%1000;let a=[];if(t)a=a.concat(p1000(t,false),["tausend"]);return a.concat(p1000(r,true))}
+function numberToGerman(n){return n===1000000?"eine Million":germanParts(n).join("")}
+const fmt=n=>n.toLocaleString("de-DE");
+const isEven=n=>n%2===0;
+const lab=e=>e?"<b>gerade</b> (par)":"<b>ungerade</b> (impar)";
+// pista de la palabra: qué parte dice la última cifra
+function clueWord(n){if(n===1000000)return"Million";const u=n%10,r=n%100;
+if(r===0)return n%1000===0?(n===0?"null":"tausend"):"hundert";
+if(r>=13&&r<=19)return TEENS[r];if(r<=12)return r===1?"eins":ONES[r];
+return u?unit(u)+" und…":TENS[Math.floor(r/10)]}
+function tipDigits(n){const u=n%10;return`Mira la última cifra: <b>${u}</b> es ${u%2?"impar":"par"} → ${lab(u%2===0)}.`}
+function tipLetters(n){const u=n%10,r=n%100,w=clueWord(n);
+if(n===1000000)return"<b>eine Million</b> = 1 000 000, termina en 0 → "+lab(true)+".";
+if(r===0)return`Termina en <b>${w}</b> → la última cifra es 0 → ${lab(true)}.`;
+if(r>20&&u)return`¡Ojo! En alemán las unidades van <b>antes de und</b>: <b>${unit(u)}</b>und${TENS[Math.floor(r/10)]} → la última cifra es ${u} (${u%2?"impar":"par"}) → ${lab(u%2===0)}.`;
+if(r>=13&&r<=19)return`<b>${w}</b> = ${r}: la última cifra es ${u} (${u%2?"impar":"par"}) → ${lab(u%2===0)}.`;
+if(r>20)return`Termina en <b>${w}</b> (decena) → última cifra 0 → ${lab(true)}.`;
+return`Termina en <b>${w}</b> = ${r} → última cifra ${u} (${u%2?"impar":"par"}) → ${lab(u%2===0)}.`}
+function tipOf(n,st){return st==="letras"?tipLetters(n):tipDigits(n)}
+// ===== Temas =====
+const TOPICS=[["u20","0–20",0,20],["u100","21–99",21,99],["u1000","100–999 (Hundert)",100,999],["u1e6","1000–1 000 000 (Tausend, Million)",1000,1000000]];
+const ALL=TOPICS.map(t=>t[0]);
+const CK="aleman_check_gerade",BK="gerade_best";
+function getChecks(){try{return JSON.parse(localStorage.getItem(CK))||[]}catch(e){return[]}}
+function renderTopics(){const c=getChecks();topics.innerHTML=TOPICS.map(t=>`<label><input type="checkbox" value="${t[0]}" ${(window._sel||ALL).includes(t[0])?"checked":""}> ${t[1]} <span class="ck">${c.includes(t[0])?"✔":""}</span></label>`).join("");
+let b=0;try{b=+localStorage.getItem(BK)||0}catch(e){}best.textContent=b?`🏆 Mejor puntaje en el Desafío: ${b}`:"🏆 Aún no tienes récord. ¡Juega el Desafío!";
+homeChecks.textContent=c.length?"✔ Dominado: "+TOPICS.filter(t=>c.includes(t[0])).map(t=>t[1]).join(", "):"Gana ✔ con 13 o más puntos y cero errores en el Desafío.";renderSeg()}
+function sel(){if(document.getElementById("home").classList.contains("hidden")&&window._sel)return window._sel;const s=[...topics.querySelectorAll("input:checked")].map(i=>i.value);window._sel=s;return s}
+function randZahl(){const s=window._sel&&window._sel.length?window._sel:ALL;const t=TOPICS.find(x=>x[0]===s[Math.floor(Math.random()*s.length)])||TOPICS[0];
+const wantEven=Math.random()<.5;
+if(t[0]==="u1e6"&&wantEven&&Math.random()<.06)return 1000000;
+let n=t[2]+Math.floor(Math.random()*(t[3]-t[2]+1));
+if(t[0]==="u1e6"&&Math.random()<.5)n=1000+Math.floor(Math.random()*9000); // también miles "pequeños"
+if(isEven(n)!==wantEven)n=n+1<=t[3]?n+1:n-1;
+return n}
+function show(id){["home","study","practice","challenge"].forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id));if(id==="home")renderTopics();scrollTo(0,0)}
+let STYLE="cifras";try{STYLE=sessionStorage.getItem("gerade_style")||"cifras"}catch(e){}
+function renderSeg(){const h=`<button type="button" class="tab" aria-pressed="${STYLE==="cifras"}" onclick="setStyle('cifras')">🔢 Cifras</button><button type="button" class="tab" aria-pressed="${STYLE==="letras"}" onclick="setStyle('letras')">🔤 Letras</button>`;segHome.innerHTML=h;segPrac.innerHTML=h}
+function setStyle(s){STYLE=s;try{sessionStorage.setItem("gerade_style",s)}catch(e){}renderSeg();if(!document.getElementById("practice").classList.contains("hidden"))goNextPractice(true)}
+function qHTML(n,st){return st==="letras"?`<p style="text-align:center">¿Este número es gerade o ungerade?</p><div class="q qw">${numberToGerman(n)}</div>`:`<p style="text-align:center">¿Este número es gerade o ungerade?</p><div class="q">${fmt(n)}</div>`}
+// ===== Estudiar =====
+const RULES=[
+["gerade","Par = gerade","Un número es <b>gerade</b> (par) si se puede repartir en 2 grupos iguales. Termina en <b>0, 2, 4, 6 u 8</b>.","2 zwei · 4 vier · 10 zehn · 36 sechsunddreißig · 500 fünfhundert → <b>gerade</b>"],
+["ungerade","Impar = ungerade","Un número es <b>ungerade</b> (impar) si sobra 1 al repartir en 2. Termina en <b>1, 3, 5, 7 o 9</b>.","1 eins · 7 sieben · 13 dreizehn · 45 fünfundvierzig · 999 neunhundertneunundneunzig → <b>ungerade</b>"],
+["Última cifra","¡Solo mira la última cifra!","No importa lo grande que sea el número: solo cuenta la <b>última cifra</b> (las unidades).","123 456 → 6 → gerade<br>98 765 → 5 → ungerade<br>1 000 000 → 0 → gerade"],
+["Letras 1","Palabras: busca las unidades","Si la palabra <b>termina</b> en eins, zwei, drei… o en -zehn (13–19), esa parte te dice la última cifra. Si termina en -zig/-ßig, hundert, tausend o Million, la última cifra es 0 → <b>gerade</b>.","zweihundert<b>drei</b> (203) → ungerade<br>vier<b>zehn</b> (14) → 4 → gerade<br>fünf<b>tausend</b> (5000) → gerade"],
+["Letras 2","¡Ojo con und!","Del 21 al 99 el alemán dice primero la <b>unidad</b>, luego <b>und</b>, luego la decena. ¡La pista está <b>antes de und</b>, no al final!","<b>sieben</b>undzwanzig (27) → 7 → ungerade<br><b>acht</b>unddreißig (38) → 8 → gerade<br>dreihundert<b>ein</b>undvierzig (341) → 1 → ungerade"],
+["Wörter","Palabras útiles","gerade = par · ungerade = impar · die Zahl = el número · die Einerstelle = las unidades","Ist 8 gerade? <b>Ja, 8 ist gerade.</b><br>Ist 9 gerade? <b>Nein, 9 ist ungerade.</b>"]];
+tabs.innerHTML=RULES.map((r,i)=>`<button type="button" class="tab" aria-pressed="false" onclick="flashOf(${i})">${r[0]}</button>`).join("");
+function flashOf(i){tabs.querySelectorAll(".tab").forEach((b,j)=>b.setAttribute("aria-pressed",i===j));const r=RULES[i];
+flash.innerHTML=`<b class="big">${r[0]}</b> · <i>${r[1]}</i><br><b>Regla:</b> ${r[2]}<br><b>Ejemplos:</b><br>${r[3]}`}
+flashOf(0);
+exBtns.innerHTML=[14,27,38,203,5000,1000000].map(n=>`<button type="button" class="btn blue" onclick="demo(${n})">${fmt(n)}</button>`).join("");
+function demo(n){if(isNaN(n)||!(n>=0&&n<=1000000)){demoOut.textContent="Escribe un número entre 0 y 1 000 000.";return}n=Math.floor(n);
+demoOut.innerHTML=`<div class="q">${fmt(n)}</div><div class="word">${numberToGerman(n)}</div><p style="text-align:center;font-size:1.4rem">${fmt(n)} ist ${isEven(n)?"<b>gerade</b> (par)":"<b>ungerade</b> (impar)"}</p><p>🔢 ${tipDigits(n)}</p><p>🔤 ${tipLetters(n)}</p>`}
+demo(27);
+demoIn.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();demo(+demoIn.value)}});
+// ===== Practicar =====
+let pN=null,pSt="cifras",pScoreV=0,pStreakV=0,pDone=false,pAwarded=false,pLastNext=0;
+function startPractice(){if(!sel().length){alert("Elige al menos un grupo de números.");return}pScoreV=0;pStreakV=0;pScore.textContent=0;pStreak.textContent=0;pN=null;show("practice");renderSeg();goNextPractice(true)}
+function newPractice(){pDone=false;pAwarded=false;pFb.textContent="";pFb.className="fb";pG.disabled=false;pU.disabled=false;
+pNext.className="btn blue";pNext.textContent="➡️ Siguiente";pNext.blur();
+let n,g=0;do{n=randZahl();g++}while(n===pN&&g<30);pN=n;pSt=STYLE;pArea.innerHTML=qHTML(n,pSt)}
+function goNextPractice(force){const t=Date.now();if(!force&&t-pLastNext<400)return;pLastNext=t;
+try{newPractice()}catch(err){console.error(err);pDone=false;try{pG.disabled=false;pU.disabled=false}catch(e){}}}
+function answerP(saysEven){if(pDone||pN===null)return;
+try{pDone=true;pG.disabled=true;pU.disabled=true;const ok=saysEven===isEven(pN);
+const w=pSt==="letras"?` (${fmt(pN)})`:` (${numberToGerman(pN)})`;
+if(ok){if(!pAwarded){pAwarded=true;pScoreV++;pStreakV++}pFb.className="fb good";pFb.innerHTML=`🎉 ¡Muy bien, ${NM()}! ${fmt(pN)} ist ${isEven(pN)?"gerade":"ungerade"}.<br><small>${w}</small>`}
+else{pStreakV=0;pFb.className="fb bad";pFb.innerHTML=`❌ Era ${lab(isEven(pN))}${w}.<br>💡 ${tipOf(pN,pSt)}`}
+}catch(err){console.error(err)}
+pScore.textContent=pScoreV;pStreak.textContent=pStreakV;pNext.className="btn green";pNext.textContent="➡️ Siguiente número";setTimeout(()=>pNext.focus(),30)}
+document.addEventListener("keydown",e=>{if(document.getElementById("practice").classList.contains("hidden"))return;
+if(e.key==="Enter"&&pDone&&e.target.tagName!=="BUTTON"){e.preventDefault();goNextPractice()}});
+// ===== Desafío =====
+let dN,dSt2,dS,dSt,dE,dLeft,dTim,dSel,dLast=0;
+function startChallenge(){dSel=sel();if(!dSel.length){alert("Elige al menos un grupo de números.");return}show("challenge");
+dS=dSt=dE=0;dLeft=60;updD();dPlay.classList.remove("hidden");dAgain.classList.add("hidden");dFb.textContent="";nextD();
+clearInterval(dTim);dTim=setInterval(()=>{dLeft--;timer.textContent="⏱️ "+dLeft;if(dLeft<=0)endChallenge()},1000)}
+function stopChallenge(){clearInterval(dTim)}
+function updD(){dScore.textContent=dS;dStreak.textContent=dSt;dErr.textContent=dE;timer.textContent="⏱️ "+dLeft}
+function nextD(){try{let n,g=0;do{n=randZahl();g++}while(n===dN&&g<30);dN=n;dSt2=Math.random()<.5?"cifras":"letras";dArea.innerHTML=qHTML(n,dSt2)}catch(e){console.error(e)}}
+function answerD(saysEven){if(dN==null||dLeft<=0)return;const t=Date.now();if(t-dLast<250)return;dLast=t;
+try{const n=dN;if(saysEven===isEven(n)){dS++;dSt++;dFb.className="fb good";dFb.textContent=`✅ ¡Bien! ${fmt(n)} ist ${isEven(n)?"gerade":"ungerade"}`}
+else{dE++;dSt=0;dFb.className="fb bad";dFb.innerHTML=`❌ ${fmt(n)} (${numberToGerman(n)}) ist ${lab(isEven(n))}`}}catch(e){console.error(e)}updD();nextD()}
+function endChallenge(){clearInterval(dTim);dPlay.classList.add("hidden");dAgain.classList.remove("hidden");
+let b=0;try{b=+localStorage.getItem(BK)||0}catch(e){}let msg=`⏰ ¡Tiempo! ${NM()}, hiciste ${dS} puntos con ${dE} errores.`;
+try{if(dS>b){localStorage.setItem(BK,dS);msg+=" 🏆 ¡Nuevo récord!"}
+if(dS>=13&&dE===0){const c=new Set(getChecks());dSel.forEach(t=>c.add(t));localStorage.setItem(CK,JSON.stringify([...c]));msg+=" ✔ ¡Ganaste la marca verde!"}
+else msg+=" Para ganar ✔ necesitas 13 o más puntos y cero errores."}catch(e){}
+dFb.className="fb good";dFb.textContent=msg}
+renderTopics();
+</script>
+</body></html>
